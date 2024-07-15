@@ -18,8 +18,22 @@ class Welcome extends CI_Controller {
 	 * map to /index.php/welcome/<method_name>
 	 * @see https://codeigniter.com/userguide3/general/urls.html
 	 */
+	public function __construct(){
+		parent::__construct();
+		$this->load->model('Client_model');
+		$this->load->library('session');
+	}
 	public function index()
 	{
-		$this->load->view('welcome_message');
+		$types = $this->Client_model->getTypes();
+		$data['types'] = $types;
+		$this->load->view('login',$data);
+	}
+	public function login(){
+		$numero = $this->input->get('numero');
+		$type = $this->input->get('type');
+		$id_client = $this->Client_model->login($numero,$type);
+		// $this->session->set_userdata()
+		echo "tonga ato";
 	}
 }

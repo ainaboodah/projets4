@@ -5,10 +5,12 @@
   <title>CodePen - Finance Mobile Application-UX/UI Design Screen One</title>
   <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
 <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
-<link rel='stylesheet' href='https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&amp;display=swap'><link rel="stylesheet" href="<?php echo base_url('assets/css/login.css'); ?>">
+<link rel='stylesheet' href='https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&amp;display=swap'><link rel="stylesheet" href="<?php echo base_url('assets/css/style.css'); ?>">
 
 </head>
 <body>
+<form action="<?= site_url('login'); ?>" methode='GET'>
+
 <!-- partial:index.partial.html -->
 <div class="screen-1">
   <svg class="logo" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="300" height="300" viewbox="0 0 640 480" xml:space="preserve">
@@ -31,27 +33,30 @@
       <polygon style="stroke: rgb(0,0,0); stroke-width: 0; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: rgb(255,255,255); fill-rule: nonzero; opacity: 1;" vector-effect="non-scaling-stroke" points="-50,-50 -50,50 50,50 50,-50 "></polygon>
     </g>
   </svg>
-  <div class="email">
-    <label for="num_voiture"> Numéro De La Voiture</label>
-    <div class="sec-2">
-      <ion-icon name="mail-outline"></ion-icon>
-      <input type="number" name="number" />
+  <!-- form -->
+    <div class="email">
+        <label for="numero"> Numéro De La Voiture</label>
+        <div class="sec-2">
+          <ion-icon name="mail-outline"></ion-icon>
+          <input type="text"name ="numero" id="numero" required />
+        </div>
     </div>
-  </div>
-  <div class="type_voiture">
-    <label for="type_voiture">Type De Voiture</label>
+    <div class="type_voiture">
+      <label for="numero">Type De Voiture</label>
     <div class="sec-2">
       <!-- ovaina avany am base ty refa vita le izy mi affiche ny type rehetra anaty base -->
-      <select name="" id="type_voiture">
-        <option value="4x4">4x4</option>
-        <option value="4x4">legere</option>
-        <option value="4x4">Utilitere</option>
+      <select id="type_voiture" name="type">
+        <?php foreach($types as $type): ?>
+          <option value="<?php echo $type['id']?>"><?php echo $type['value']; ?> </option>
+        <?php endforeach ?>
       </select>
-
     </div>
-  </div>
+    </div>
   <!--manambotra fonction redirect aveo-->
-  <button class="login">Login</button>
+  <button type="submit" class="login">Connexion</button>
+  <!-- form -->
+  </form >
+
   <div class="footer">
     <a href="signup.html" class="signup-link">Signup</a>
   </div>

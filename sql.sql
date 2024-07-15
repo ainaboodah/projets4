@@ -20,7 +20,7 @@ create table slot(
     value varchar(10)
 );
 
--- -- service
+-- -- service ou rendez vous
 CREATE table service(
     id INT AUTO_INCREMENT PRIMARY KEY,
     id_client int,
@@ -49,6 +49,11 @@ CREATE table diagnostic_detail(
     etat int,
     FOREIGN KEY(id_diagnostic) REFERENCES diagnostic(id),
     FOREIGN KEY(id_piece) REFERENCES pieces(id)
+);
+--tarif
+create table tarif(
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    value varchar(50),
 );
 
 
