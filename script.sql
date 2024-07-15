@@ -9,6 +9,14 @@ CREATE TABLE Admin (
     UNIQUE KEY unique_admin (username, password)
 );
 
+CREATE TABLE client (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    immatriculation varchar(15),
+    idtype int,
+    nom varchar(50),
+    FOREIGN KEY (idtype) REFERENCES type(id)
+);
+
 -- Create the Ouverture table
 CREATE TABLE Ouverture (
     id INT PRIMARY KEY AUTO_INCREMENT,
@@ -35,11 +43,37 @@ CREATE TABLE rendezvous (
     client_id INT,
     id_service INT,
     date_debut DATETIME NOT NULL,
-    slot VARCHAR(1),
+    id_slot INT REFERENCES slots(id),
     date_paiement DATE,
     FOREIGN KEY (client_id) REFERENCES clients(id),
     FOREIGN KEY (id_service) REFERENCES services(id_service)
 );
+CREATE TABLE slots (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    slot VARCHAR(1) NOT NULL
+);
+
+-- Insérez les slots disponibles
+INSERT INTO slots (slot) VALUES ('A'), ('B'), ('C');
+
+--  Les slots occupés
+CREATE VIEW v_slot_occupe AS
+SELECT id_slot, date_debut, DATE_ADD(date_debut, INTERVAL TIME_TO_SEC(duree) SECOND) AS date_fin
+FROM rendezvous
+JOIN services ON rendezvous.id_service = services.id_service;
+
+--  Les slots disponibles
+SELECT slot
+FROM slots 
+LEFT JOIN v_slot_occupe 
+    ON slot = id_slot
+    AND (
+        (date_debut < '2024-07-15 10:00:00' AND date_fin > '2024-07-15 10:00:00')
+    )
+WHERE id_slot IS NULL;
+
+
+
 INSERT INTO projets4.`type`
 (id, value)
 VALUES(2, 'Légère');
@@ -85,15 +119,6 @@ VALUES(15, 'Hatchback');
 INSERT INTO projets4.`type`
 (id, value)
 VALUES(16, 'SUV');
-
-CREATE TABLE client (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    immatriculation varchar(15),
-    idtype int,
-    nom varchar(50),
-    FOREIGN KEY (idtype) REFERENCES type(id)
-);
-
 INSERT INTO projets4.client
 (id, immatriculation, idtype, nom)
 VALUES(1, '9216TAB', 2, 'Boodah Aina');
