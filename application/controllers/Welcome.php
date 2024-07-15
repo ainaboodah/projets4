@@ -36,4 +36,7 @@ class Welcome extends CI_Controller {
 		$this->session->set_userdata('id_client',$id_client->id);
 		$this->load-view('index');
 	}
+	public function loginAdmin(){
+		$this->load->view('loginadmin');
+	}
 }

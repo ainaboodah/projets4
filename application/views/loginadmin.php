@@ -2,15 +2,13 @@
 <html lang="en" >
 <head>
   <meta charset="UTF-8">
-  <title>CodePen - Finance Mobile Application-UX/UI Design Screen One</title>
+  <title>Admin</title>
   <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
 <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
 <link rel='stylesheet' href='https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&amp;display=swap'><link rel="stylesheet" href="<?php echo base_url('assets/css/style.css'); ?>">
 
 </head>
 <body>
-<form action="<?= site_url('login'); ?>" methode='GET'>
-
 <!-- partial:index.partial.html -->
 <div class="screen-1">
   <svg class="logo" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="300" height="300" viewbox="0 0 640 480" xml:space="preserve">
@@ -33,34 +31,30 @@
       <polygon style="stroke: rgb(0,0,0); stroke-width: 0; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: rgb(255,255,255); fill-rule: nonzero; opacity: 1;" vector-effect="non-scaling-stroke" points="-50,-50 -50,50 50,50 50,-50 "></polygon>
     </g>
   </svg>
-  <!-- form -->
+  <form action="" name="adminlogin">
     <div class="email">
-        <label for="numero"> Numéro De La Voiture</label>
-        <div class="sec-2">
-          <ion-icon name="mail-outline"></ion-icon>
-          <input type="text"name ="numero" id="numero" required />
-        </div>
+      <label for="email">Email Address</label>
+      <div class="sec-2">
+        <ion-icon name="mail-outline"></ion-icon>
+        <input type="email" name="email" placeholder="Username@gmail.com"/>
+      </div>
     </div>
-    <div class="type_voiture">
-      <label for="numero">Type De Voiture</label>
-    <div class="sec-2">
-      <!-- ovaina avany am base ty refa vita le izy mi affiche ny type rehetra anaty base -->
-      <select id="type_voiture" name="type">
-        <?php foreach($types as $type): ?>
-          <option value="<?php echo $type['id']?>"><?php echo $type['value']; ?> </option>
-        <?php endforeach ?>
-      </select>
+    <div class="password">
+      <label for="password">Password</label>
+      <div class="sec-2">
+        <ion-icon name="lock-closed-outline"></ion-icon>
+        <input class="pas" type="password" name="password"/>
+        <ion-icon class="show-hide" name="eye-outline"></ion-icon>
+      </div>
     </div>
-    </div>
-  <!--manambotra fonction redirect aveo-->
-  <button type="submit" class="login">Connexion</button>
-  <!-- form -->
-  </form >
-
+  </form>
+  <button class="login">Login </button>
   <div class="footer">
-    <a href="<?php echo site_url('loginadmin'); ?>" class="signup-link">Connecter en tant qu'administrateur</a>
+    <a href="login.html" class="signup-link">Login as an User</a>
+    <a href="signup.html" class="signup-link">Signup</a>
   </div>
 </div>
-<!-- partial -->
+
+  
 </body>
 </html>
