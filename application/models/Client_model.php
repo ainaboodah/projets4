@@ -23,4 +23,3 @@ class Client_model extends CI_Model {
         return $this->db->get('type')->result_array();
     }
 }
-?>

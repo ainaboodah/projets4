@@ -33,7 +33,7 @@ class Welcome extends CI_Controller {
 		$numero = $this->input->get('numero');
 		$type = $this->input->get('type');
 		$id_client = $this->Client_model->login($numero,$type);
-		// $this->session->set_userdata()
-		echo "tonga ato";
+		$this->session->set_userdata('id_client',$id_client->id);
+		$this->load-view('index');
 	}
 }
