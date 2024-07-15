@@ -18,11 +18,12 @@ class Client_model extends CI_Model {
         }
     }
     public function signup($numero, $type){
-        try {
+        $id_client = $this->db->get_where('client',array('immatriculation' => $numero))->row();        
+        if(is_null($id_client)){
             $this->db->insert('client', array('immatriculation' => $numero, 'idType' => $type));
             return $this->db->insert_id(); // Return inserted user ID
-        } catch (\Throwable $th) {
-            throw $th;
+        }else{
+            throw new Exception("L'immatriculation ". $numero . ' existe déja');
         }
     }
 

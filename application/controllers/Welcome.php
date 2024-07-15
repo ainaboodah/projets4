@@ -40,7 +40,9 @@ class Welcome extends CI_Controller {
 		} catch (\Throwable $th) {
 			//throw $th;
 			$data['errorMessage'] = $th->getMessage();
-			$this->load->view('/',$data);
+			$types = $this->Client_model->getTypes();
+			$data['types'] = $types;
+			$this->load->view('login',$data);
 		}
 		
 	}
