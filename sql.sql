@@ -5,6 +5,7 @@ CREATE TABLE type (
     id INT AUTO_INCREMENT PRIMARY KEY,
     value varchar(50)
 );
+
 INSERT INTO projets4.`type`
 (id, value)
 VALUES(2, 'Légère');
@@ -50,3 +51,18 @@ VALUES(15, 'Hatchback');
 INSERT INTO projets4.`type`
 (id, value)
 VALUES(16, 'SUV');
+
+CREATE TABLE client (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    immatriculation varchar(15),
+    idtype int,
+    nom varchar(50),
+    FOREIGN KEY (idtype) REFERENCES type(id)
+);
+
+INSERT INTO projets4.client
+(id, immatriculation, idtype, nom)
+VALUES(1, '9216TAB', 2, 'Boodah Aina');
+INSERT INTO projets4.client
+(id, immatriculation, idtype, nom)
+VALUES(2, '1123TAC', 2, 'Tendry');
