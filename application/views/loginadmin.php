@@ -6,10 +6,12 @@
   <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
 <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
 <link rel='stylesheet' href='https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&amp;display=swap'><link rel="stylesheet" href="<?php echo base_url('assets/css/style.css'); ?>">
-
+<link rel="stylesheet" href="<?php echo base_url('assets/css/bootstrap.css'); ?>">
 </head>
 <body>
 <!-- partial:index.partial.html -->
+<form action="<?php echo site_url('loginadmin'); ?>" name="adminlogin" method="get">
+
 <div class="screen-1">
   <svg class="logo" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="300" height="300" viewbox="0 0 640 480" xml:space="preserve">
     <g transform="matrix(3.31 0 0 3.31 320.4 240.4)">
@@ -31,12 +33,11 @@
       <polygon style="stroke: rgb(0,0,0); stroke-width: 0; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: rgb(255,255,255); fill-rule: nonzero; opacity: 1;" vector-effect="non-scaling-stroke" points="-50,-50 -50,50 50,50 50,-50 "></polygon>
     </g>
   </svg>
-  <form action="" name="adminlogin">
     <div class="email">
-      <label for="email">Email Address</label>
+      <label for="username">Username</label>
       <div class="sec-2">
         <ion-icon name="mail-outline"></ion-icon>
-        <input type="email" name="email" placeholder="Username@gmail.com"/>
+        <input type="text" name="username" placeholder="Admin's username" required/>
       </div>
     </div>
     <div class="password">
@@ -47,14 +48,21 @@
         <ion-icon class="show-hide" name="eye-outline"></ion-icon>
       </div>
     </div>
+    <button type="submit" class="login">Login </button>
+    <?php if(isset($errorMessage)) { ?>
+      <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <?php echo $errorMessage; ?>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>     
+    <?php } ?>   
   </form>
-  <button class="login">Login </button>
   <div class="footer">
-    <a href="login.html" class="signup-link">Login as an User</a>
-    <a href="signup.html" class="signup-link">Signup</a>
+    <a href="<?php echo site_url('/'); ?>" class="signup-link">Login as an User</a>
   </div>
 </div>
 
-  
+  <script src="<?php echo base_url('assets/js/bootstrap.js'); ?>"></script>
+  <script src="<?php echo base_url('assets/js/jquery.js'); ?>"></script>
+
 </body>
 </html>

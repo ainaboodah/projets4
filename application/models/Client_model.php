@@ -10,12 +10,20 @@ class Client_model extends CI_Model {
         if($id_client) {
             return $id_client;
         } else {
-            return $this->signup($numero, $type);
+            try {
+                return $this->signup($numero, $type);
+            } catch (\Throwable $th) {
+                throw $th;
+            }
         }
     }
     public function signup($numero, $type){
-        $this->db->insert('client', array('immatriculation' => $numero, 'idType' => $type));
-        return $this->db->insert_id(); // Return inserted user ID
+        try {
+            $this->db->insert('client', array('immatriculation' => $numero, 'idType' => $type));
+            return $this->db->insert_id(); // Return inserted user ID
+        } catch (\Throwable $th) {
+            throw $th;
+        }
     }
 
     //  get all type 

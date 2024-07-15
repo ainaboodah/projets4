@@ -13,6 +13,8 @@ CREATE TABLE client (
     nom varchar(50),
     FOREIGN KEY (idtype) REFERENCES type(id)
 );
+ALTER TABLE client
+ADD CONSTRAINT unique_immatriculation UNIQUE (immatriculation);
 
 -- slot 1 à 3
 create table slot(
@@ -151,3 +153,12 @@ INSERT INTO projets4.slot
 (id, value)
 VALUES(3, 'slot 3');
 
+CREATE TABLE Admin (
+    idAdmin INT PRIMARY KEY AUTO_INCREMENT,
+    username VARCHAR(70) NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    UNIQUE KEY unique_admin (username, password)
+);
+INSERT INTO projets4.admin
+(idAdmin, username, password)
+VALUES(1, 'admin', 'password');

@@ -33,14 +33,30 @@ class Welcome extends CI_Controller {
 	public function login(){
 		$numero = $this->input->get('numero');
 		$type = $this->input->get('type');
-		$id_client = $this->Client_model->login($numero,$type);
-		$this->session->set_userdata('id_client',$id_client->id);
-		$this->load-view('index');
+		try {
+			$id_client = $this->Client_model->login($numero,$type);
+			$this->session->set_userdata('id_client',$id_client->id);
+			$this->load-view('index');
+		} catch (\Throwable $th) {
+			//throw $th;
+			$data['errorMessage'] = $th->getMessage();
+			$this->load->view('/',$data);
+		}
+		
 	}
 	public function loginAdminView(){
 		$this->load->view('loginadmin');
 	}
 	public function loginAdmin(){
-		echo "ato ndray izy ato";
+		$username = $this->input->get('username');
+		$password = $this->input->get('password');
+		$admin = $this->Admin_model->authenticate($username,$password);
+		if(!is_null($admin)) {
+			$this->session->set_userdata('id_admin',$admin->id);
+			$this->load-view('index');
+		}else{
+			$data['errorMessage'] = "Username or password incorect.";
+			$this->load->view('loginadmin',$data);
+		}
 	}
 }
