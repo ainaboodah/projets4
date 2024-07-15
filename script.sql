@@ -1,8 +1,13 @@
--- Create the database
-CREATE DATABASE garage;
+-- sql: nom base projets4
+-- mila mi-creer base chacun
 
--- Use the garage database
-USE garage;
+-- Create the Admin table
+CREATE TABLE Admin (
+    idAdmin INT PRIMARY KEY AUTO_INCREMENT,
+    username VARCHAR(70) NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    UNIQUE KEY unique_admin (username, password)
+);
 
 -- Create the Ouverture table
 CREATE TABLE Ouverture (
@@ -10,65 +15,88 @@ CREATE TABLE Ouverture (
     debut TIME NOT NULL,
     fin TIME NOT NULL
 );
-
 INSERT INTO Ouverture (debut, fin) VALUES ('08:00:00', '18:00:00');
 
--- Create the Admin table
-CREATE TABLE Admin (
-    idAdmin INT PRIMARY KEY AUTO_INCREMENT,
-    email VARCHAR(70) NOT NULL,
-    motDePasse VARCHAR(40) NOT NULL,
+CREATE TABLE type (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    value varchar(50)
+);
+
+
+CREATE TABLE services (
+    id_service INT AUTO_INCREMENT PRIMARY KEY,
     nom VARCHAR(50) NOT NULL,
-    dateNaissance DATE NOT NULL,
-    sexe CHAR(1) NOT NULL,
-    UNIQUE KEY unique_admin (email, motDePasse)
+    duree TIME NOT NULL,
+    prix INT NOT NULL
 );
 
--- Create the TypeVoiture table
-CREATE TABLE TypeVoiture (
-    idType INT PRIMARY KEY AUTO_INCREMENT,
-    nomType VARCHAR(70) NOT NULL
+CREATE TABLE rendezvous (
+    id_rdv INT AUTO_INCREMENT PRIMARY KEY,
+    client_id INT,
+    id_service INT,
+    date_debut DATETIME NOT NULL,
+    slot VARCHAR(1),
+    date_paiement DATE,
+    FOREIGN KEY (client_id) REFERENCES clients(id),
+    FOREIGN KEY (id_service) REFERENCES services(id_service)
+);
+INSERT INTO projets4.`type`
+(id, value)
+VALUES(2, 'Légère');
+INSERT INTO projets4.`type`
+(id, value)
+VALUES(3, '4x4');
+INSERT INTO projets4.`type`
+(id, value)
+VALUES(4, 'Utilitaire');
+INSERT INTO projets4.`type`
+(id, value)
+VALUES(5, 'Berline');
+INSERT INTO projets4.`type`
+(id, value)
+VALUES(6, 'Coupé');
+INSERT INTO projets4.`type`
+(id, value)
+VALUES(7, 'Break');
+INSERT INTO projets4.`type`
+(id, value)
+VALUES(8, 'Cabriolet');
+INSERT INTO projets4.`type`
+(id, value)
+VALUES(9, 'Monospace');
+INSERT INTO projets4.`type`
+(id, value)
+VALUES(10, 'Pick-up');
+INSERT INTO projets4.`type`
+(id, value)
+VALUES(11, 'Limousine');
+INSERT INTO projets4.`type`
+(id, value)
+VALUES(12, 'Van');
+INSERT INTO projets4.`type`
+(id, value)
+VALUES(13, 'Voiture de sport');
+INSERT INTO projets4.`type`
+(id, value)
+VALUES(14, 'Roadster');
+INSERT INTO projets4.`type`
+(id, value)
+VALUES(15, 'Hatchback');
+INSERT INTO projets4.`type`
+(id, value)
+VALUES(16, 'SUV');
+
+CREATE TABLE client (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    immatriculation varchar(15),
+    idtype int,
+    nom varchar(50),
+    FOREIGN KEY (idtype) REFERENCES type(id)
 );
 
--- Create the Client table
-CREATE TABLE Client (
-    idClient INT PRIMARY KEY AUTO_INCREMENT,
-    numVoiture VARCHAR(50) NOT NULL, -- Car number, serves as part of the login
-    typeVoiture INT NOT NULL, -- Foreign key referencing TypeVoiture
-    nomProprio VARCHAR(100), -- Name of the car owner
-    numProprio VARCHAR(100), -- Contact information of the car owner
-    dateRegistration DATE NOT NULL, -- Date when the client registered
-    UNIQUE KEY unique_car (numVoiture, typeVoiture), -- Ensuring car number and type combination is unique
-    FOREIGN KEY (typeVoiture) REFERENCES TypeVoiture(idType) -- Foreign key constraint
-);
-
--- Create the Service table
-CREATE TABLE Service (
-    idService INT PRIMARY KEY AUTO_INCREMENT,
-    nomService VARCHAR(70) NOT NULL,
-    prix DECIMAL(16,3) NOT NULL,
-    durreeMin TIME NOT NULL
-);
-
--- Create the Slot table
-CREATE TABLE Slot (
-    idSlot INT PRIMARY KEY AUTO_INCREMENT,
-    nomSlot CHAR(1) NOT NULL -- A B C
-);
-
-INSERT INTO Slot (nomSlot) VALUES ('A');
-INSERT INTO Slot (nomSlot) VALUES ('B');
-INSERT INTO Slot (nomSlot) VALUES ('C');
-
--- Create the RendezVous table
-CREATE TABLE RendezVous (
-    idRDV INT PRIMARY KEY AUTO_INCREMENT,
-    idClient INT NOT NULL,
-    dateHeureRDV DATETIME NOT NULL,
-    dateConsultation DATETIME NOT NULL,
-    idService INT NOT NULL,
-    idSlot INT NOT NULL,
-    FOREIGN KEY (idClient) REFERENCES Client(idClient),
-    FOREIGN KEY (idSlot) REFERENCES Slot(idSlot),
-    FOREIGN KEY (idService) REFERENCES Service(idService)
-);
+INSERT INTO projets4.client
+(id, immatriculation, idtype, nom)
+VALUES(1, '9216TAB', 2, 'Boodah Aina');
+INSERT INTO projets4.client
+(id, immatriculation, idtype, nom)
+VALUES(2, '1123TAC', 2, 'Tendry');
