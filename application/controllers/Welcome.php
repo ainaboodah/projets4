@@ -21,6 +21,7 @@ class Welcome extends CI_Controller {
 	public function __construct(){
 		parent::__construct();
 		$this->load->model('Client_model');
+		$this->load->model('Admin_model');
 		$this->load->library('session');
 	}
 	public function index()
@@ -36,7 +37,10 @@ class Welcome extends CI_Controller {
 		$this->session->set_userdata('id_client',$id_client->id);
 		$this->load-view('index');
 	}
-	public function loginAdmin(){
+	public function loginAdminView(){
 		$this->load->view('loginadmin');
+	}
+	public function loginAdmin(){
+		echo "ato ndray izy ato";
 	}
 }
