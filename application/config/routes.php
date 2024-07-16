@@ -65,6 +65,7 @@ $route['logoutadmin'] = 'adminController/logoutAdmin';
 $route['loginAsUserAdmin'] = 'adminController/logAsUserAdmin';
 $route['serviceadminview'] = 'adminController/serviceAdminView';
 $route['listRdv'] = 'adminController/listRdv';
+$route['ajaxRdv'] = 'adminController/getAjax';
 
 
 

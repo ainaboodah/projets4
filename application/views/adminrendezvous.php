@@ -117,6 +117,8 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             var calendarEl = document.getElementById('calendar');
+            var data = "<?php echo site_url('ajaxRdv'); ?>";
+            console.log('URL for AJAX request:', data);
             var calendar = new FullCalendar.Calendar(calendarEl, {
                 initialView: 'dayGridMonth',
                 selectable: true,
@@ -126,7 +128,7 @@
                         id: 1,
                         title: 'Client: 1, Service: 2',
                         start: '2024-07-10',
-                        end: '2024-07-12'
+                        end: '2024-07-10'
                     },
                     {
                         id: 2,

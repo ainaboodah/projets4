@@ -21,6 +21,7 @@ class AdminController extends CI_Controller {
     public function __construct(){
 		parent::__construct();
 		$this->load->model('Client_model');
+		$this->load->model('Rendezvous_model');
 		$this->load->library('session');
 	}
 	public function index()
@@ -49,7 +50,7 @@ class AdminController extends CI_Controller {
 		}
     }
 
-    
+
     public function listRdv(){
 
         if ($this->session->userdata('id_admin')) {
@@ -57,6 +58,13 @@ class AdminController extends CI_Controller {
 		} else {
             $this->load->view('loginadmin');
 		}
+    }
+    public function getAjax($datemin, $datemax){
+        $data = $this->Rendezvous_model->get_rendezvous_between_dates($datemin, $datemax);
+        $response = array('events' => $data);
+        $this->output
+             ->set_content_type('application/json')
+             ->set_output(json_encode($response));
     }
 
 }

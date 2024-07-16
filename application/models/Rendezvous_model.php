@@ -10,6 +10,13 @@ class Rendezvous_model extends CI_Model {
             $this->db->from('rendezvous');
             return $this->db->get()->result();
         }
+        public function get_rendezvous_between_dates($startDate, $endDate) {
+            $this->db->select('id_rdv AS id, client_id, id_service, date_debut, date_paiement');
+            $this->db->from('rendezvous');
+            $this->db->where('date_debut >=', $startDate); // Filter by start date
+            $this->db->where('date_debut <=', $endDate);   // Filter by end date
+            return $this->db->get()->result();
+        }
     
         // // ajouter rdv mbola tsy mazava
         // public function add_appointment($client_id, $service_id, $date_debut, $id_slot) {
