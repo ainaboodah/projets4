@@ -11,7 +11,7 @@ class Admin_model extends CI_Model {
     public function authenticate($username, $password) {
         $this->db->where('username', $username);
         $this->db->where('password', $password);
-        return $this->db->get('admin')->row();
+        return $this->db->get('Admin')->row();
     }
 
     // Set reference date (today's date)

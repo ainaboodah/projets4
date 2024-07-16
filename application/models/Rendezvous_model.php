@@ -169,7 +169,6 @@ class Rendezvous_model extends CI_Model {
                 $errors[] = "Service not found: $typeService";
                 continue;
             }
-
             if ($montant < 0) {
                 $errors[] = "Montant doit être positive";
                 continue;

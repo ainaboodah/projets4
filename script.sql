@@ -8,7 +8,7 @@ CREATE TABLE Admin (
     password VARCHAR(255) NOT NULL,
     UNIQUE KEY unique_admin (username, password)
 );
-
+INSERT INTO Admin VALUES (default, 'admin', 'admin');
 CREATE TABLE type (
     id INT AUTO_INCREMENT PRIMARY KEY,
     value varchar(50)
@@ -40,22 +40,24 @@ CREATE TABLE slots (
     id INT AUTO_INCREMENT PRIMARY KEY,
     slot VARCHAR(1) NOT NULL
 );
+-- Create the Rendezvous table
 CREATE TABLE rendezvous (
     id_rdv INT AUTO_INCREMENT PRIMARY KEY,
     client_id INT,
     id_service INT,
     date_debut DATETIME NOT NULL,
-    id_slot INT REFERENCES slots(id),
+    id_slot INT,
     date_paiement DATE,
-    FOREIGN KEY (client_id) REFERENCES clients(id),
-    FOREIGN KEY (id_service) REFERENCES services(id_service)
+    FOREIGN KEY (client_id) REFERENCES client(id),
+    FOREIGN KEY (id_service) REFERENCES services(id_service),
+    FOREIGN KEY (id_slot) REFERENCES slots(id)
 );
 
 -- Insérez les slots disponibles
 INSERT INTO slots (slot) VALUES ('A'), ('B'), ('C');
 
---  Les slots occupés
-CREATE OR REPLACE v_slot_occupe AS
+-- Create view for occupied slots
+CREATE OR REPLACE VIEW v_slot_occupe AS
 SELECT id_slot, date_debut, DATE_ADD(date_debut, INTERVAL TIME_TO_SEC(duree) SECOND) AS date_fin
 FROM rendezvous
 JOIN services ON rendezvous.id_service = services.id_service;
@@ -70,17 +72,17 @@ LEFT JOIN v_slot_occupe
     )
 WHERE id_slot IS NULL;
 
---  view travaux
-CREATE OR REPLACE v_travaux AS
-            SELECT rendezvous.*, client.nom AS client_name, services.nom AS service_name
-            FROM rendezvous
-            JOIN client ON rendezvous.client_id = client.id
-            JOIN services ON rendezvous.id_service = services.id_service
+-- Create view for travaux
+CREATE OR REPLACE VIEW v_travaux AS
+SELECT rendezvous.*, client.nom AS client_name, services.nom AS service_name
+FROM rendezvous
+JOIN client ON rendezvous.client_id = client.id
+JOIN services ON rendezvous.id_service = services.id_service;
 
---  slot usage
-SELECT * FROM v_travaux WHERE DATE(date_debut) = dategiven GROUP BY id_slot;
+-- Query for slot usage
+SELECT * FROM v_travaux WHERE DATE(date_debut) = '2024-07-15' GROUP BY id_slot;
 
--- Additional SQL for revenue calculation 
+-- Additional SQL for revenue calculation and grouping by car type
 CREATE OR REPLACE VIEW v_revenue AS
 SELECT r.id_rdv, r.date_paiement, s.prix, c.idtype, t.value AS car_type
 FROM rendezvous r
@@ -88,14 +90,12 @@ JOIN services s ON r.id_service = s.id_service
 JOIN client c ON r.client_id = c.id
 JOIN type t ON c.idtype = t.id;
 
---and grouping by car type
 SELECT
     car_type,
     SUM(prix) AS total_revenue
 FROM v_revenue
 WHERE date_paiement IS NOT NULL
 GROUP BY car_type;
-
 
 INSERT INTO projets4.`type`
 (id, value)

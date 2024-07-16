@@ -8,27 +8,31 @@ class Admin extends CI_Controller {
         $this->load->model('Admin_model');
         $this->load->model('Rendezvous_model');
     }
-
+    public function index() {
+        $this->load->view('loginadmin');
+    }
     // Authenticate admin
-    public function authenticate() {
+    public function login() {
         $username = $this->input->post('username');
         $password = $this->input->post('password');
         
         $admin = $this->Admin_model->authenticate($username, $password);
         if ($admin) {
-            $this->session->set_userdata('admin_id', $admin->idAdmin);
+            $this->session->set_userdata('admin_id', $this->session->userdata('admin_id'));
             $this->session->set_userdata('role', 'admin');
             redirect('admin/dashboard'); 
         } else {
-            $this->session->set_flashdata('error', 'Login Invalide');
-            redirect('admin/login');
+            forward($this, 'admin/loginadmin', array('error' => 'Login Invalide'));
         }
     }
 
+    public function dashboard() {
+        forward($this, 'admindashboard', array('admin_id' => $this->session->userdata('admin_id')));
+    }
     // Logout admin
     public function logout() {
-        $this->session->unset_userdata('admin_id');
-        redirect('admin/login');
+        $this->session->sess_destroy();
+        redirect('admin/');
     }
 
     // Create a service
@@ -122,52 +126,51 @@ class Admin extends CI_Controller {
         }
     }
 
-    public function import_services() {
-        $config['upload_path'] = './uploads/';
-        $config['allowed_types'] = 'csv';
-        $config['max_size'] = 2048;
-
-        $this->load->library('upload', $config);
-
-        if (!$this->upload->do_upload('csvfile')) {
-            $error = array('error' => $this->upload->display_errors());
-            $this->load->view('admin/adminfileinsert', $error);
-        } else {
-            $file_data = $this->upload->data();
-            $csv_file_path = $file_data['full_path'];
-            $result = $this->Admin_model->import_services($csv_file_path);
-            if (is_array($result)) {
-                $data['errors'] = $result;
-            } else {
-                $data['success'] = 'Services imported successfully.';
-            }
-
-            $this->load->view('admin/adminfileinsert', $data);
-        }
+    public function import() {
+        forward($this, 'adminfileinsert', array('admin_id' => $this->session->userdata('admin_id')));
     }
 
-    public function import_rendezvous() {
-        $config['upload_path'] = './uploads/';
-        $config['allowed_types'] = 'csv';
-        $config['max_size'] = 2048;
-        $this->load->library('upload', $config);
-        if (!$this->upload->do_upload('csvfile')) {
-            $error = array('error' => $this->upload->display_errors());
-            $this->load->view('admin/adminfileinsert', $error);
-        } else {
-            $file_data = $this->upload->data();
-            $csv_file_path = $file_data['full_path'];
+    public function do_import() {
+        $this->import_services();
+        $this->import_travaux();
+    }
+    private function import_services() {
+        if (!empty($_FILES['file']['tmp_name'])) {
+            $fileData = $_FILES['file'];
+            $filePath = $fileData['tmp_name'];
 
-            $result = $this->Rendezvous_model->import($csv_file_path);
+            $errors = $this->Admin_model->import_services($filePath);
+            $data = array('admin_id' => $this->session->userdata('admin_id'));
 
-            if (is_array($result)) {
-                $data['errors'] = $result;
+            if (empty($errors)) {
+                $data['message'] = 'Services imported successfully!';
             } else {
-                $data['success'] = 'Rendezvous imported successfully.';
+                $data['errors'] = implode('<br>', $errors);
             }
-
-            $this->load->view('admin/adminfileinsert', $data);
+        } else {
+            $data['errors'] = 'No file uploaded.';
         }
+        forward($this, 'adminfileinsert', $data);
+    }
+
+    private function import_travaux() {
+        if (!empty($_FILES['file']['tmp_name'])) {
+            $fileData = $_FILES['file'];
+            $filePath = $fileData['tmp_name'];
+
+            $errors = $this->Rendezvous_model->import($filePath);
+            $data = array('admin_id' => $this->session->userdata('admin_id'));
+
+            if (empty($errors)) {
+                $data['message'] = 'Rendezvous imported successfully!';
+            } else {
+                $data['errors'] = implode('<br>', $errors);
+            }
+        } else {
+            $data['errors'] = 'No file uploaded.';
+        }
+        forward($this, 'adminfileinsert', $data);
+
     }
 
     public function slot_usage() {
