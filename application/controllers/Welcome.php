@@ -49,32 +49,20 @@ class Welcome extends CI_Controller {
 	public function loginAdminView(){
 		$this->load->view('loginadmin');
 	}
-	// public function loginAdmin(){
-	// 	$username = $this->input->post('username');
-	// 	$password = $this->input->post('password');
-	// 	$admin = $this->Admin_model->authenticate($username,$password);
-	// 	if(!is_null($admin)) {
-	// 		$this->session->set_userdata('id_admin',$admin->idAdmin);
-	// 		$this->load->view('admindashboard');
-	// 	}else{
-	// 		$data['errorMessage'] = "Username or password incorect.";
-	// 		$this->load->view('loginadmin',$data);
-	// 	}
-	// }
-	// Authenticate admin
-	public function loginAdmin() {
+	public function loginAdmin(){
 		$username = $this->input->post('username');
 		$password = $this->input->post('password');
-		
-		$admin = $this->Admin_model->authenticate($username, $password);
-		if ($admin) {
-			$this->session->set_userdata('admin_id', $admin->idAdmin);
-			$this->session->set_userdata('role', 'admin');
-			redirect('welcome/dashboard'); 
-		} else {
-			forward($this, 'welcome/loginadmin', array('error' => 'Login Invalide'));
+		$admin = $this->Admin_model->authenticate($username,$password);
+		if(!is_null($admin)) {
+			$this->session->set_userdata('id_admin',$admin->idAdmin);
+			$this->load->view('admindashboard');
+		}else{
+			$data['errorMessage'] = "Username or password incorect.";
+			$this->load->view('loginadmin',$data);
 		}
 	}
+	// Authenticate admin
+
 	public function dashboard() {
         $data ['revenue'] = $this->Admin_model->get_total_revenue();
         $data ['admin_id'] = $this->session->userdata('admin_id');

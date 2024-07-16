@@ -55,7 +55,7 @@ $route['translate_uri_dashes'] = FALSE;
 
 $route['login'] = 'welcome/login';
 $route['loginadminview'] = 'welcome/loginAdminView';
-$route['loginadmin'] = 'welcome/loginAdmin';
+$route['loginadmin'] = 'admin/login';
 $route['rendezvous'] = 'rendezvous';
 $route['accueil'] = 'welcome/accueil';
 $route['devis'] = 'devis_controller';
