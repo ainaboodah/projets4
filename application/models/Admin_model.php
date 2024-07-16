@@ -80,10 +80,12 @@ class Admin_model extends CI_Model {
     // reset database
     public function reset_database() {
         $this->check_admin();
-        $this->db->delete('service');
-        $this->db->delete('type');
-        $this->Rendezvous_model->reset_rdv();
+        $this->db->query('SET FOREIGN_KEY_CHECKS = 0');
+        $this->db->truncate('rendezvous');
+        $this->db->truncate('services');
+        $this->db->truncate('type');
         $this->Client_model->reset_client();
+        $this->db->query('SET FOREIGN_KEY_CHECKS = 1');
         redirect('admin/dashboard');
     }
 

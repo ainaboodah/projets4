@@ -7,9 +7,14 @@ class Admin extends CI_Controller {
         parent::__construct();
         $this->load->model('Admin_model');
         $this->load->model('Rendezvous_model');
+        $this->load->library('table');
     }
     public function index() {
         $this->load->view('loginadmin');
+    }
+
+    public function reset_bdd() {
+        $this->Admin_model->reset_database();
     }
     // Authenticate admin
     public function login() {
@@ -18,7 +23,7 @@ class Admin extends CI_Controller {
         
         $admin = $this->Admin_model->authenticate($username, $password);
         if ($admin) {
-            $this->session->set_userdata('admin_id', $this->session->userdata('admin_id'));
+            $this->session->set_userdata('admin_id', $admin->idAdmin);
             $this->session->set_userdata('role', 'admin');
             redirect('admin/dashboard'); 
         } else {
@@ -27,7 +32,9 @@ class Admin extends CI_Controller {
     }
 
     public function dashboard() {
-        forward($this, 'admindashboard', array('admin_id' => $this->session->userdata('admin_id')));
+        $data ['revenue'] = $this->Admin_model->get_total_revenue();
+        $data ['admin_id'] = $this->session->userdata('admin_id');
+        forward($this, 'admindashboard', $data);
     }
     // Logout admin
     public function logout() {
@@ -52,8 +59,14 @@ class Admin extends CI_Controller {
 
     // Read all services
     public function get_services() {
-        $services = $this->Admin_model->get_services();
-        $this->load->view('services/list', ['services' => $services]);
+        $table = $this->generateTable('services');
+        $data = ['table' => $table, 'admin_id' => $this->session->userdata('admin_id')];
+        forward($this, 'adminservice', $data);
+    }
+
+    private function generateTable($tableName) {
+        $query = $this->db->get($tableName);
+        return $this->table->generate($query);
     }
 
     // Update a service
@@ -135,17 +148,15 @@ class Admin extends CI_Controller {
         $this->import_travaux();
     }
     private function import_services() {
-        if (!empty($_FILES['file']['tmp_name'])) {
-            $fileData = $_FILES['file'];
+        if (!empty($_FILES['services']['tmp_name'])) {
+            $fileData = $_FILES['services'];
             $filePath = $fileData['tmp_name'];
-
             $errors = $this->Admin_model->import_services($filePath);
             $data = array('admin_id' => $this->session->userdata('admin_id'));
-
             if (empty($errors)) {
                 $data['message'] = 'Services imported successfully!';
             } else {
-                $data['errors'] = implode('<br>', $errors);
+                $data['errors'] = $errors;
             }
         } else {
             $data['errors'] = 'No file uploaded.';
@@ -154,8 +165,8 @@ class Admin extends CI_Controller {
     }
 
     private function import_travaux() {
-        if (!empty($_FILES['file']['tmp_name'])) {
-            $fileData = $_FILES['file'];
+        if (!empty($_FILES['travaux']['tmp_name'])) {
+            $fileData = $_FILES['travaux'];
             $filePath = $fileData['tmp_name'];
 
             $errors = $this->Rendezvous_model->import($filePath);
@@ -164,13 +175,12 @@ class Admin extends CI_Controller {
             if (empty($errors)) {
                 $data['message'] = 'Rendezvous imported successfully!';
             } else {
-                $data['errors'] = implode('<br>', $errors);
+                $data['errors'] = $errors;
             }
         } else {
             $data['errors'] = 'No file uploaded.';
         }
         forward($this, 'adminfileinsert', $data);
-
     }
 
     public function slot_usage() {

@@ -19,7 +19,7 @@ class Client_model extends CI_Model {
     }
 
     public function reset_client() {
-        $this->db->delete('client');
+        $this->db->truncate('client');
     }
 
     //  get all type 

@@ -74,23 +74,6 @@ class Rendezvous_model extends CI_Model {
         }
     }
 
-    // Fonction pour insérer un rendez-vous
-    private function insert_reservation($client_id, $service_id, $date_debut, $id_slot, $date_paiement = null) {
-        $reservation_data = [
-            'client_id' => $client_id,
-            'id_service' => $service_id,
-            'date_debut' => $date_debut,
-            'id_slot' => $id_slot,
-            'date_paiement' => $date_paiement 
-        ];
-        $this->db->insert('rendezvous', $reservation_data);
-        return [
-            'status' => 'success',
-            'message' => 'Réservation effectuée avec succès',
-            'reservation' => $reservation_data
-        ];
-    }
-
     // Fonction pour gérer les réservations qui dépassent l'heure de fermeture
     private function reserver_multi_jours($client_id, $date_debut, $service_id, $duree_service) {
         $date_fin_journee = date('Y-m-d ' . $this->heure_fin, strtotime($date_debut));
@@ -125,9 +108,7 @@ class Rendezvous_model extends CI_Model {
         }
     }
 
-    public function reset_redv() {
-        $this->db->delete('rendezvous');
-    }
+
     //  mbola mila ampiana
     public function generate_devis($reservation_id) {
         $this->load->library('pdf');
@@ -160,7 +141,7 @@ class Rendezvous_model extends CI_Model {
             $typeService = $row[array_search('type service', $headers)];
             $montant = $row[array_search('montant', $headers)];
             $datePaiement = $row[array_search('date paiement', $headers)];
-            $slot = $row[array_search('slot', $headers)];
+            $slot = isset($row[array_search('slot', $headers)]) ? $row[array_search('slot', $headers)] : null;
 
             $clientId = $this->Client_model->login($voiture, $this->getIdType($typeVoiture));
 
@@ -170,11 +151,11 @@ class Rendezvous_model extends CI_Model {
                 continue;
             }
             if ($montant < 0) {
-                $errors[] = "Montant doit être positive";
+                $errors[] = "Montant doit être positif";
                 continue;
             }
             if (strtotime($datePaiement) < strtotime($dateRdv)) {
-                $errors[] = "Date de paiement au moins égale à la date du rendez-vous.";
+                $errors[] = "La date de paiement doit être au moins égale à la date du rendez-vous.";
                 continue;
             }
 
@@ -185,10 +166,10 @@ class Rendezvous_model extends CI_Model {
             }
         }
 
-        $this->create_travaux();
-
         if (!empty($errors)) {
             return $errors;
+        } else {
+            $this->create_travaux();
         }
         return true;
     }
@@ -206,13 +187,36 @@ class Rendezvous_model extends CI_Model {
 
     private function create_travaux() {
         $query = $this->db->query("
-            CREATE OR REPLACE v_travaux AS
+            CREATE OR REPLACE VIEW v_travaux AS
             SELECT rendezvous.*, client.nom AS client_name, services.nom AS service_name
             FROM rendezvous
             JOIN client ON rendezvous.client_id = client.id
             JOIN services ON rendezvous.id_service = services.id_service
         ");
         return $query ? true : false;
+    }
+
+    private function insert_reservation($client_id, $service_id, $date_debut, $id_slot, $date_paiement = null) {
+        $reservation_data = array(            
+            'client_id' => $client_id,
+            'id_service' => $service_id,
+            'date_debut' => $date_debut,
+            'id_slot' => $id_slot,
+            'date_paiement' => $date_paiement 
+        );
+        try {
+            $this->db->insert('rendezvous', $reservation_data);
+            return [
+                'status' => 'success',
+                'message' => 'Réservation effectuée avec succès',
+                'reservation' => $reservation_data
+            ];
+        } catch (Exception $e) {
+            return [
+                'status' => 'error',
+                'message' => $e->getMessage()
+            ];
+        }
     }
     
 }
