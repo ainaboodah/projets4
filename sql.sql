@@ -178,3 +178,9 @@ CREATE TABLE Admin (
 INSERT INTO projets4.admin
 (idAdmin, username, password)
 VALUES(1, 'admin', 'password');
+
+INSERT INTO services (nom, duree, prix) VALUES
+('Réparation simple', '01:00:00', 150000),
+('Réparation standard', '02:00:00', 250000),
+('Réparation complexe', '08:00:00', 800000),
+('Entretien', '02:30:00', 300000);
