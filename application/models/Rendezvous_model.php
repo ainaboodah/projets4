@@ -141,7 +141,7 @@ class Rendezvous_model extends CI_Model {
             $typeService = $row[array_search('type service', $headers)];
             $montant = $row[array_search('montant', $headers)];
             $datePaiement = $row[array_search('date paiement', $headers)];
-            $slot = isset($row[array_search('slot', $headers)]) ? $row[array_search('slot', $headers)] : null;
+            // $slot = isset($row[array_search('slot', $headers)]) ? $row[array_search('slot', $headers)] : null;
 
             $clientId = $this->Client_model->login($voiture, $this->getIdType($typeVoiture));
 
@@ -160,7 +160,7 @@ class Rendezvous_model extends CI_Model {
             }
 
             $dateDebut = "$dateRdv $heureRdv";
-            $insertResult = $this->insert_reservation($clientId, $service->id_service, $dateDebut, $slot, $datePaiement);
+            $insertResult = $this->insert_reservation($clientId, $service->id_service, $dateDebut, null, $datePaiement);
             if ($insertResult['status'] === 'error') {
                 $errors[] = $insertResult['message'];
             }

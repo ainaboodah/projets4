@@ -178,6 +178,11 @@ class Admin extends CI_Controller
         echo json_encode($appointments);
     }
 
+    public function to_rdv() {
+        $data['admin_id'] = $this->session->userdata('admin_id');
+        forward($this, 'adminrendezvous', $data);   
+    }
+
     // ajouter un rendez vous
     public function ajouter_rdv()
     {

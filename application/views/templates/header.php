@@ -75,8 +75,13 @@ Bootstrap 5 Dashboard Admin Template
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="<?php echo site_url('admin/get_rendezvous') ?>">
+                                <a class="nav-link" href="<?php echo site_url('admin/to_rdv') ?>">
                                     Liste Des Rendez-Vous
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="<?php echo site_url('admin/payment') ?>">
+                                    Devis
                                 </a>
                             </li>
                             <li class="nav-item">
