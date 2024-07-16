@@ -44,7 +44,9 @@ class AdminController extends CI_Controller {
     }
     public function serviceAdminView(){
         if ($this->session->userdata('id_admin')) {
-            $this->load->view('adminservice');
+			// list rendez vous
+			$data['$rdv'] = $this->Rendezvous_model->get_rendezvous();
+            $this->load->view('adminservice',$data);
 		} else {
             $this->load->view('loginadmin');
 		}
@@ -66,5 +68,6 @@ class AdminController extends CI_Controller {
              ->set_content_type('application/json')
              ->set_output(json_encode($response));
     }
+
 
 }
