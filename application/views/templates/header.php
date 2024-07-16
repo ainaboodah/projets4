@@ -70,7 +70,7 @@ Bootstrap 5 Dashboard Admin Template
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" aria-current="page" href="<?php echo site_url('client/login') ?>">
+                                <a class="nav-link" aria-current="page" href="<?php echo site_url('welcome/login') ?>">
                                     Login As User
                                 </a>
                             </li>
