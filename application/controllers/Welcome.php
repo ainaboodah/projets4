@@ -31,9 +31,10 @@ class Welcome extends CI_Controller {
 		$this->load->view('login',$data);
 	}
 	public function login(){
-		$numero = $this->input->get('numero');
-		$type = $this->input->get('type');
+		$numero = $this->input->post('numero');
+		$type = $this->input->post('type');
 		try {
+			$this->session->unset_userdata('id_client');
 			$id_client = $this->Client_model->login($numero,$type);
 			$this->session->set_userdata('id_client',$id_client->id);
 			$this->load->view('accueil');
@@ -49,8 +50,8 @@ class Welcome extends CI_Controller {
 		$this->load->view('loginadmin');
 	}
 	public function loginAdmin(){
-		$username = $this->input->get('username');
-		$password = $this->input->get('password');
+		$username = $this->input->post('username');
+		$password = $this->input->post('password');
 		$admin = $this->Admin_model->authenticate($username,$password);
 		if(!is_null($admin)) {
 			$this->session->set_userdata('id_admin',$admin->id);

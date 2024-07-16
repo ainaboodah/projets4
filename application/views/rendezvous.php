@@ -88,7 +88,7 @@ Bootstrap 5 Dashboard Admin Template
 
                                         <form class="custom-form profile-form" action="<?php echo site_url('takeRdv'); ?>" method="get" role="form" name="rendezvous">
                                             <p>Choix de Date</p>
-                                            <input class="form-control" type="date" name="daty" id="profile-name">
+                                            <input class="form-control" type="date" name="daty" id="profile-name" value = "<?php echo date('Y-m-d'); ?>">
                                             <p>Heure de Debut</p>
                                             <input class="form-control" type="number" name="heure" id="profile-name" placeholder="1h" min="0" max="23">
                                             <p>Type de Service</p>
@@ -99,10 +99,10 @@ Bootstrap 5 Dashboard Admin Template
                                             </select>
                                             <div class="d-flex">
                                                 <button type="button" class="form-control me-3" name="supp">
-                                                    Supprimer
+                                                    Supprimer 
                                                 </button>
 
-                                                <button type="submit" class="form-control ms-2" name="valid_rendezvous">
+                                                <button type="submit" class="form-control ms-2">
                                                     Valider
                                                 </button>
                                             </div>
