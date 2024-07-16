@@ -10,7 +10,7 @@
 </head>
 <body>
 <!-- partial:index.partial.html -->
-<form action="<?php echo site_url('loginadmin'); ?>" name="adminlogin" method="get">
+<form action="<?php echo site_url('loginadmin'); ?>" name="adminlogin" method="post">
 
 <div class="screen-1">
   <svg class="logo" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="300" height="300" viewbox="0 0 640 480" xml:space="preserve">

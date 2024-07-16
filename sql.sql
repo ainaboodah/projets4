@@ -57,6 +57,22 @@ create table tarif(
     id INT AUTO_INCREMENT PRIMARY KEY,
     value varchar(50),
 );
+create table service_type(
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    value varchar(50)
+);
+INSERT INTO projets4.service_type
+(id, value)
+VALUES(1, 'Réparation simple');
+INSERT INTO projets4.service_type
+(id, value)
+VALUES(2, 'Réparation standard');
+INSERT INTO projets4.service_type
+(id, value)
+VALUES(3, 'Réparation complexe');
+INSERT INTO projets4.service_type
+(id, value)
+VALUES(4, 'Entretien ');
 
 
 INSERT INTO projets4.`type`

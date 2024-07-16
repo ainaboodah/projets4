@@ -36,7 +36,7 @@ class Welcome extends CI_Controller {
 		try {
 			$id_client = $this->Client_model->login($numero,$type);
 			$this->session->set_userdata('id_client',$id_client->id);
-			$this->load-view('index');
+			$this->load->view('accueil');
 		} catch (\Throwable $th) {
 			//throw $th;
 			$data['errorMessage'] = $th->getMessage();
@@ -44,7 +44,6 @@ class Welcome extends CI_Controller {
 			$data['types'] = $types;
 			$this->load->view('login',$data);
 		}
-		
 	}
 	public function loginAdminView(){
 		$this->load->view('loginadmin');
@@ -59,6 +58,15 @@ class Welcome extends CI_Controller {
 		}else{
 			$data['errorMessage'] = "Username or password incorect.";
 			$this->load->view('loginadmin',$data);
+		}
+	}
+	public function accueil(){
+		if ($this->session->userdata('id_client')) {
+			$this->load->view('accueil');
+		} else {
+			$types = $this->Client_model->getTypes();
+			$data['types'] = $types;
+			$this->load->view('login',$data);
 		}
 	}
 }

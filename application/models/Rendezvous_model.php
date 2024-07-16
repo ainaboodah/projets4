@@ -142,5 +142,7 @@ class Rendezvous_model extends CI_Model {
         $this->pdf->render();
         $this->pdf->stream("devis_{$reservation_id}.pdf", array("Attachment" => 0)); // Set Attachment to 0 for inline viewing
     }
-    
+    public function getServiceType(){
+        return $this->db->get('services')->result_array();
+    }
 }

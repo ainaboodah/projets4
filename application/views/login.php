@@ -10,7 +10,7 @@
 
 </head>
 <body>
-<form action="<?= site_url('login'); ?>" methode='post'>
+<form action="<?= site_url('login'); ?>" method='POST'>
 
 <!-- partial:index.partial.html -->
 <div class="screen-1">
