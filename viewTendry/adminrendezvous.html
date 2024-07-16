@@ -48,7 +48,6 @@
                             </a>
                         </li>
 
-
                         <li class="nav-item">
                             <a class="nav-link" href="adminreference.html">
                                 Date De Reference
@@ -67,14 +66,12 @@
                             </a>
                         </li>
 
-                        
                         <li class="nav-item">
                             <a class="nav-link" href="adminservice.html">
                                 Services
                             </a>
                         </li>
 
-                        
                         <li class="nav-item">
                             <a class="nav-link" href="adminrendezvous.html">
                                 Liste Des Rendez-Vous
@@ -131,6 +128,8 @@
             var calendarEl = document.getElementById('calendar');
             var calendar = new FullCalendar.Calendar(calendarEl, {
                 initialView: 'dayGridMonth',
+                selectable: true,
+                selectHelper: true,
                 events: [
                     {
                         id: 1,
@@ -150,7 +149,19 @@
                         start: '2024-07-20',
                         end: '2024-07-21'
                     }
-                ]
+                ],
+                select: function(info) {
+                    var title = prompt('Enter Event Title:');
+                    if (title) {
+                        calendar.addEvent({
+                            title: title,
+                            start: info.startStr,
+                            end: info.endStr,
+                            allDay: info.allDay
+                        });
+                    }
+                    calendar.unselect();
+                }
             });
             calendar.render();
         });
