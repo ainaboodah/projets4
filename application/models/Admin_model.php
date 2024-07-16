@@ -93,12 +93,33 @@ class Admin_model extends CI_Model {
         }
     }
 
-    //  importation services
-    public function import_services() {
-        read csv 
-        check if duree positive
-        $this->db->insert('services', array('nom' => $service, duree, if prix == null $prix = 0))
-    }
-
+    public function import_services($csvFilePath) {
+        $data = array_map('str_getcsv', file($csvFilePath));
+        $headers = array_shift($data);
+        $errors = [];
+        foreach ($data as $row) {
+            $headers = array_map('strtolower', $headers);
+            $service = $row[array_search('nom', $headers)];
+            $duree = $row[array_search('duree', $headers)];
+            $prix = isset($row[array_search('prix', $headers)]) ? $row[array_search('prix', $headers)] : 0;
+    
+            if ($duree <= 0) {
+                $errors[] = "Durée doit être positive: $service";
+                continue;
+            }
+            $service_data = [
+                'nom' => $service,
+                'duree' => $duree,
+                'prix' => $prix
+            ];
+    
+            $this->db->insert('services', $service_data);
+        }
+    
+        if (!empty($errors)) {
+            return $errors;
+        }
+        return true;
+    }    
 }
 ?>

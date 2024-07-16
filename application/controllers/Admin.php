@@ -121,5 +121,53 @@ class Admin extends CI_Controller {
             echo json_encode(['status' => 'error', 'message' => 'Erreur pour la prise de rendez-vous']);
         }
     }
+
+    public function import_services() {
+        $config['upload_path'] = './uploads/';
+        $config['allowed_types'] = 'csv';
+        $config['max_size'] = 2048;
+
+        $this->load->library('upload', $config);
+
+        if (!$this->upload->do_upload('csvfile')) {
+            $error = array('error' => $this->upload->display_errors());
+            $this->load->view('admin/adminfileinsert', $error);
+        } else {
+            $file_data = $this->upload->data();
+            $csv_file_path = $file_data['full_path'];
+            $result = $this->Admin_model->import_services($csv_file_path);
+            if (is_array($result)) {
+                $data['errors'] = $result;
+            } else {
+                $data['success'] = 'Services imported successfully.';
+            }
+
+            $this->load->view('admin/adminfileinsert', $data);
+        }
+    }
+
+    public function import_rendezvous() {
+        $config['upload_path'] = './uploads/';
+        $config['allowed_types'] = 'csv';
+        $config['max_size'] = 2048;
+        $this->load->library('upload', $config);
+        if (!$this->upload->do_upload('csvfile')) {
+            $error = array('error' => $this->upload->display_errors());
+            $this->load->view('admin/adminfileinsert', $error);
+        } else {
+            $file_data = $this->upload->data();
+            $csv_file_path = $file_data['full_path'];
+
+            $result = $this->Rendezvous_model->import($csv_file_path);
+
+            if (is_array($result)) {
+                $data['errors'] = $result;
+            } else {
+                $data['success'] = 'Rendezvous imported successfully.';
+            }
+
+            $this->load->view('admin/adminfileinsert', $data);
+        }
+    }
 }
 ?>

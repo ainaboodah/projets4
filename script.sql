@@ -79,6 +79,7 @@ CREATE VIEW v_travaux AS
             JOIN client ON rendezvous.client_id = client.id
             JOIN services ON rendezvous.id_service = services.id_service
 
+
 INSERT INTO projets4.`type`
 (id, value)
 VALUES(2, 'Légère');
