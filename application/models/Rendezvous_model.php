@@ -207,7 +207,7 @@ class Rendezvous_model extends CI_Model {
 
     private function create_travaux() {
         $query = $this->db->query("
-            CREATE VIEW v_travaux AS
+            CREATE OR REPLACE v_travaux AS
             SELECT rendezvous.*, client.nom AS client_name, services.nom AS service_name
             FROM rendezvous
             JOIN client ON rendezvous.client_id = client.id

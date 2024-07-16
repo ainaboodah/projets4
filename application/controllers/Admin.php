@@ -169,5 +169,17 @@ class Admin extends CI_Controller {
             $this->load->view('admin/adminfileinsert', $data);
         }
     }
+
+    public function slot_usage() {
+        $this->load->view('admin/slot_usage');
+    }
+    public function get_slot_usage() {
+        $date = $this->input->post('date');
+        if ($date == NULL) {
+            $date = date('Y-m-d'); 
+        }
+        $slots = $this->Admin_model->get_slot_usage_for_date($date);
+        echo json_encode($slots);
+    }
 }
 ?>

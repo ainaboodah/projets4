@@ -121,5 +121,48 @@ class Admin_model extends CI_Model {
         }
         return true;
     }    
+
+    public function get_slot_usage($date) {
+        $query = $this->db->query("
+            SELECT * FROM v_travaux
+            WHERE DATE(date_debut) = ?
+            GROUP BY id_slot
+        ", array($date));
+        return $query->result();
+    }
+
+    public function get_voiture_jour($date) {
+        $query = $this->db->query("
+            SELECT client_id, COUNT(client_id) FROM rendezvous
+            WHERE DATE(date_debut) = ?
+        ", array($date));
+        return $query->result();
+    }
+
+    public function get_total_revenue() {
+        $this->db->select_sum('prix');
+        $this->db->where('date_paiement IS NOT NULL', null, false);
+        $query = $this->db->get('v_revenue');
+        return $query->row()->prix;
+    }
+
+    public function get_revenue_by_car_type() {
+        $this->db->select('car_type, SUM(prix) AS total_revenue');
+        $this->db->where('date_paiement IS NOT NULL', null, false);
+        $this->db->group_by('car_type');
+        $query = $this->db->get('v_revenue');
+        return $query->result();
+    }
+
+    public function get_details_by_car_type($car_type) {
+        $this->db->select('r.*, s.nom AS service_name, c.nom AS client_name');
+        $this->db->from('rendezvous r');
+        $this->db->join('services s', 'r.id_service = s.id_service');
+        $this->db->join('client c', 'r.client_id = c.id');
+        $this->db->join('type t', 'c.idtype = t.id');
+        $this->db->where('t.value', $car_type);
+        $query = $this->db->get();
+        return $query->result();
+    }
 }
 ?>
