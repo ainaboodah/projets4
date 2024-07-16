@@ -40,11 +40,10 @@
   <div class="type_voiture">
     <label for="type_voiture">Type De Voiture</label>
     <div class="sec-2">
-      <!-- ovaina avany am base ty refa vita le izy mi affiche ny type rehetra anaty base -->
-      <select name="" id="type_voiture">
-        <option value="4x4">4x4</option>
-        <option value="4x4">legere</option>
-        <option value="4x4">Utilitere</option>
+      <select name="type" id="type_voiture">
+      <?php foreach ($types as $type) : ?>
+              <option value="<?php echo $type->id; ?>"><?php echo $type->value; ?></option>
+      <?php endforeach; ?>
       </select>
 
     </div>
@@ -52,7 +51,7 @@
   <!--manambotra fonction redirect aveo-->
   <button class="login">Login</button>
   <div class="footer">
-    <a href="loginadmin.html" class="signup-link">Login as an Admin</a>
+    <a href="<?php echo site_url('admin/'); ?>" class="signup-link">Login as an Admin</a>
     <a href="signup.html" class="signup-link">Signup</a>
   </div>
 </div>
