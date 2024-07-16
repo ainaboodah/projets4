@@ -148,13 +148,21 @@ class Admin_model extends CI_Model {
         return $query->row()->prix;
     }
 
-    public function get_revenue_by_car_type() {
-        $this->db->select('car_type, SUM(prix) AS total_revenue');
-        $this->db->where('date_paiement IS NOT NULL', null, false);
-        $this->db->group_by('car_type');
-        $query = $this->db->get('v_revenue');
+    public function get_revenue_by_car_type($startDate, $endDate) {
+        $this->db->select('type.value AS car_type, SUM(services.prix) AS total_revenue');
+        $this->db->from('rendezvous');
+        $this->db->join('services', 'rendezvous.id_service = services.id_service');
+        $this->db->join('clients', 'rendezvous.client_id = clients.id');
+        $this->db->where('date_paiement IS NOT NULL');
+        $this->db->where('date_paiement >=', $startDate);
+        $this->db->where('date_paiement <=', $endDate);
+        $this->db->group_by('type.value');
+        
+        $query = $this->db->get('type');
+        
         return $query->result();
     }
+    
 
     public function get_details_by_car_type($car_type) {
         $this->db->select('r.*, s.nom AS service_name, c.nom AS client_name');

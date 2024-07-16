@@ -1,7 +1,9 @@
--- sql: nom base projets4
--- mila mi-creer base chacun
-
+CREATE DATABASE projets4;
+use projets4;
 -- Create the Admin table
+CREATE TABLE reference (
+    date DATE NOT NULL
+);
 CREATE TABLE Admin (
     idAdmin INT PRIMARY KEY AUTO_INCREMENT,
     username VARCHAR(70) NOT NULL,
@@ -97,54 +99,3 @@ FROM v_revenue
 WHERE date_paiement IS NOT NULL
 GROUP BY car_type;
 
-INSERT INTO projets4.`type`
-(id, value)
-VALUES(2, 'Légère');
-INSERT INTO projets4.`type`
-(id, value)
-VALUES(3, '4x4');
-INSERT INTO projets4.`type`
-(id, value)
-VALUES(4, 'Utilitaire');
-INSERT INTO projets4.`type`
-(id, value)
-VALUES(5, 'Berline');
-INSERT INTO projets4.`type`
-(id, value)
-VALUES(6, 'Coupé');
-INSERT INTO projets4.`type`
-(id, value)
-VALUES(7, 'Break');
-INSERT INTO projets4.`type`
-(id, value)
-VALUES(8, 'Cabriolet');
-INSERT INTO projets4.`type`
-(id, value)
-VALUES(9, 'Monospace');
-INSERT INTO projets4.`type`
-(id, value)
-VALUES(10, 'Pick-up');
-INSERT INTO projets4.`type`
-(id, value)
-VALUES(11, 'Limousine');
-INSERT INTO projets4.`type`
-(id, value)
-VALUES(12, 'Van');
-INSERT INTO projets4.`type`
-(id, value)
-VALUES(13, 'Voiture de sport');
-INSERT INTO projets4.`type`
-(id, value)
-VALUES(14, 'Roadster');
-INSERT INTO projets4.`type`
-(id, value)
-VALUES(15, 'Hatchback');
-INSERT INTO projets4.`type`
-(id, value)
-VALUES(16, 'SUV');
-INSERT INTO projets4.client
-(id, immatriculation, idtype, nom)
-VALUES(1, '9216TAB', 2, 'Boodah Aina');
-INSERT INTO projets4.client
-(id, immatriculation, idtype, nom)
-VALUES(2, '1123TAC', 2, 'Tendry');

@@ -1,108 +1,160 @@
 <?php
-defined('BASEPATH') OR exit('No direct script access allowed');
+defined('BASEPATH') or exit('No direct script access allowed');
 
-class Admin extends CI_Controller {
+class Admin extends CI_Controller
+{
 
-    public function __construct() {
+    public function __construct()
+    {
         parent::__construct();
         $this->load->model('Admin_model');
+        $this->load->model('Client_model');
         $this->load->model('Rendezvous_model');
         $this->load->library('table');
     }
-    public function index() {
+    public function index()
+    {
         $this->load->view('loginadmin');
     }
 
-    public function reset_bdd() {
+    public function reset_bdd()
+    {
         $this->Admin_model->reset_database();
     }
-    // Authenticate admin
-    public function login() {
+    public function datereference()
+    {
+        $data['admin_id'] = $this->session->userdata('admin_id');
+        forward($this, 'configurationdate', $data);
+    }
+    public function set_reference()
+    {
+        $this->db->truncate('reference');
+
+        // Prepare the data for insertion
+        $data = [
+            'date' => $this->input->post('dateref') // Assuming 'dateref' is the column name
+        ];
+
+        $this->db->insert('reference', $data);
+        redirect('admin/datereference');
+    }
+    // Authenticate admin   
+    public function login()
+    {
         $username = $this->input->post('username');
         $password = $this->input->post('password');
-        
+
         $admin = $this->Admin_model->authenticate($username, $password);
         if ($admin) {
             $this->session->set_userdata('admin_id', $admin->idAdmin);
             $this->session->set_userdata('role', 'admin');
-            redirect('admin/dashboard'); 
+            redirect('admin/dashboard');
         } else {
             forward($this, 'admin/loginadmin', array('error' => 'Login Invalide'));
         }
     }
 
-    public function dashboard() {
-        $data ['revenue'] = $this->Admin_model->get_total_revenue();
-        $data ['admin_id'] = $this->session->userdata('admin_id');
+    public function dashboard($pls = null)
+    {
+        $data['revenue'] = $this->Admin_model->get_total_revenue();
+        $data['admin_id'] = $this->session->userdata('admin_id');
+        $data['rendezvous_data'] = $this->Rendezvous_model->get_total_rendezvous();
+        $data['types'] = $this->Client_model->getTypes();
+        $data['pls'] = $pls;
         forward($this, 'admindashboard', $data);
     }
+    public function detail_ch_voiture()
+    {
+        $carType = $this->input->post('cartype');
+        $details = $this->Admin_model->get_details_by_car_type($carType);
+        $data['details'] = $details;
+        forward($this, 'car_details_view', $data);
+    }
+
+    public function display_car_counts()
+    {
+        $startDate = $this->input->post('start_date');
+        $endDate = $this->input->post('end_date');
+        $carCounts = $this->Admin_model->get_revenue_by_car_type($startDate, $endDate);
+        $data['car_counts'] = $carCounts;
+        redirect('admin/dashboard');
+    }
     // Logout admin
-    public function logout() {
+    public function logout()
+    {
         $this->session->sess_destroy();
         redirect('admin/');
     }
 
     // Create a service
-    public function create_service() {
+    public function create_service()
+    {
         $nom = $this->input->post('nom');
         $duree = $this->input->post('duree');
         $prix = $this->input->post('prix');
 
         if ($this->Admin_model->create_service($nom, $duree, $prix)) {
-            $this->session->set_flashdata('success', 'Service crée');
-            redirect('admin/services');
+            $this->session->set_flashdata('success', 'Service créé');
+            redirect('admin/get_services');
         } else {
             $this->session->set_flashdata('error', 'Erreur lors de la création du service');
-            redirect('admin/services');
+            redirect('admin/get_services');
         }
     }
 
     // Read all services
-    public function get_services() {
-        $table = $this->generateTable('services');
-        $data = ['table' => $table, 'admin_id' => $this->session->userdata('admin_id')];
+    public function get_services()
+    {
+        $data['admin_id'] = $this->session->userdata('admin_id');
+        $data['services'] = $this->Admin_model->get_services();
         forward($this, 'adminservice', $data);
     }
 
-    private function generateTable($tableName) {
-        $query = $this->db->get($tableName);
-        return $this->table->generate($query);
+    // Update a service
+    public function edit_service($id_service)
+    {
+        $data['service'] = $this->Admin_model->get_service($id_service); // Fetch the specific service
+        forward($this, 'adminservice', $data); // Load the edit view
     }
 
-    // Update a service
-    public function update_service($id_service) {
+    public function update_service($id_service)
+    {
         $nom = $this->input->post('nom');
         $duree = $this->input->post('duree');
         $prix = $this->input->post('prix');
 
         if ($this->Admin_model->update_service($id_service, $nom, $duree, $prix)) {
             $this->session->set_flashdata('success', 'Service mis à jour');
-            redirect('admin/services');
+            redirect('admin/get_services');
         } else {
-            $this->session->set_flashdata('error', 'Erreur de la mis à jour');
-            redirect('admin/services');
+            $this->session->set_flashdata('error', 'Erreur lors de la mise à jour');
+            redirect('admin/get_services');
         }
     }
 
     // Delete a service
-    public function delete_service($id_service) {
+    public function delete_service($id_service)
+    {
         if ($this->Admin_model->delete_service($id_service)) {
             $this->session->set_flashdata('success', 'Service supprimé');
-            redirect('admin/services');
+            redirect('admin/get_services');
         } else {
-            $this->session->set_flashdata('error', 'Erreur de la suppression');
-            redirect('admin/services');
+            $this->session->set_flashdata('error', 'Erreur lors de la suppression');
+            redirect('admin/get_services');
         }
     }
 
+
     // Liste Devis
-    public function get_devis() {
+    public function get_devis()
+    {
         $devis = $this->Admin_model->get_devis();
         $this->load->view('devis/list', ['devis' => $devis]);
     }
 
     // confirmation du paiement
-    public function confirme_paiement($id_rdv) {
+    public function confirme_paiement($id_rdv)
+    {
         $payment_date = $this->input->post('payment_date');
 
         if ($this->Admin_model->check_date_paiement($id_rdv, $payment_date)) {
@@ -120,13 +172,15 @@ class Admin extends CI_Controller {
     }
 
     // rendez vous pour le calendrier
-    public function get_rendezvous() {
+    public function get_rendezvous()
+    {
         $appointments = $this->Rendezvous_model->get_rendezvous();
         echo json_encode($appointments);
     }
 
     // ajouter un rendez vous
-    public function ajouter_rdv() {
+    public function ajouter_rdv()
+    {
         $client_id = $this->input->post('client_id');
         $service_id = $this->input->post('service_id');
         $date_debut = $this->input->post('date_debut');
@@ -139,15 +193,18 @@ class Admin extends CI_Controller {
         }
     }
 
-    public function import() {
+    public function import()
+    {
         forward($this, 'adminfileinsert', array('admin_id' => $this->session->userdata('admin_id')));
     }
 
-    public function do_import() {
+    public function do_import()
+    {
         $this->import_services();
         $this->import_travaux();
     }
-    private function import_services() {
+    private function import_services()
+    {
         if (!empty($_FILES['services']['tmp_name'])) {
             $fileData = $_FILES['services'];
             $filePath = $fileData['tmp_name'];
@@ -164,7 +221,8 @@ class Admin extends CI_Controller {
         forward($this, 'adminfileinsert', $data);
     }
 
-    private function import_travaux() {
+    private function import_travaux()
+    {
         if (!empty($_FILES['travaux']['tmp_name'])) {
             $fileData = $_FILES['travaux'];
             $filePath = $fileData['tmp_name'];
@@ -183,16 +241,17 @@ class Admin extends CI_Controller {
         forward($this, 'adminfileinsert', $data);
     }
 
-    public function slot_usage() {
+    public function slot_usage()
+    {
         $this->load->view('admin/slot_usage');
     }
-    public function get_slot_usage() {
+    public function get_slot_usage()
+    {
         $date = $this->input->post('date');
         if ($date == NULL) {
-            $date = date('Y-m-d'); 
+            $date = date('Y-m-d');
         }
         $slots = $this->Admin_model->get_slot_usage_for_date($date);
         echo json_encode($slots);
     }
 }
-?>

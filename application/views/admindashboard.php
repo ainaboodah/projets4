@@ -14,22 +14,20 @@
 
             <div class="custom-block bg-white">
                 <h5 class="mb-4">Historique De Transaction Non-Payés Et Payés</h5>
-                <!--ETO NY ATAO LE nonPAYE REHETRA ANATINA CHART-->
                 <div id="chart"></div>
             </div>
 
             <div class="custom-block custom-block-exchange">
                 <h5 class="mb-4">Chiffre D'affaire Par Type De Voiture</h5>
-
-                <select id="car-type-select" class="form-control mb-4">
-                    <!--MAKA ANY AM BASE NY TYPE DE VOITURE REHETRA FA EXEMPLE FTSN REO-->
-                    <option value="" selected disabled>Selectionner le type de voiture</option>
-                    <option value="sedan">Sedan</option>
-                    <option value="suv">SUV</option>
-                    <option value="truck">Truck</option>
-
-                </select>
-                <button type="submit" class="btn btn-primary">Afficher</button>
+                <form action="<?php echo site_url('admin/detail_ch_voiture'); ?>" method="post">
+                    <select id="car-type-select" name="cartype" class="form-control mb-4" required>
+                        <option value="" selected disabled>Selectionner le type de voiture</option>
+                        <?php foreach ($types as $type) : ?>
+                            <option value="<?php echo $type->value; ?>"><?php echo $type->value; ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                    <button type="submit" class="btn btn-primary">Afficher</button>
+                </form>
             </div>
             <div class="custom-block custom-block-exchange">
                 <h5 class="mb-4">Nombre De Voiture Traité Par Jour</h5>
@@ -51,51 +49,65 @@
 </script>
 
 <script type="text/javascript">
+    var rendezvousData = <?php echo json_encode($rendezvous_data); ?>;
+    var payesData = [];
+    var nonPayesData = [];
+    var categories = [];
+
+    rendezvousData.forEach(function(item) {
+        categories.push(item.date);
+        payesData.push(item.payes);
+        nonPayesData.push(item.non_payes);
+    });
+
     var options = {
-      series: [{
-      name: 'Payés',
-      data: [44, 55, 57, 56, 61, 58, 63, 60, 66]
-    }, {
-      name: 'Non Payés',
-      data: [76, 85, 101, 98, 87, 105, 91, 114, 94]
-    }],
-      chart: {
-      type: 'bar',
-      height: 350
-    },
-    plotOptions: {
-      bar: {
-        horizontal: false,
-        columnWidth: '55%',
-        endingShape: 'rounded'
-      },
-    },
-    dataLabels: {
-      enabled: false
-    },
-    stroke: {
-      show: true,
-      width: 2,
-      colors: ['transparent']
-    },
-    xaxis: {
-      categories: ['Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct'],
-    },
-    yaxis: {
-      title: {
-        text: '$ (thousands)'
-      }
-    },
-    fill: {
-      opacity: 1
-    },
-    tooltip: {
-      y: {
-        formatter: function (val) {
-          return "$ " + val + " thousands"
+        series: [{
+            name: 'Payés',
+            data: payesData
+        }, {
+            name: 'Non Payés',
+            data: nonPayesData
+        }],
+        chart: {
+            type: 'bar',
+            height: 350
+        },
+        plotOptions: {
+            bar: {
+                horizontal: false,
+                columnWidth: '55%',
+                endingShape: 'rounded'
+            },
+        },
+        dataLabels: {
+            enabled: false
+        },
+        stroke: {
+            show: true,
+            width: 2,
+            colors: ['transparent']
+        },
+        xaxis: {
+            categories: categories,
+            title: {
+                text: 'Dates'
+            }
+        },
+        yaxis: {
+            title: {
+                text: 'Nombre de rendez-vous'
+            }
+        },
+        fill: {
+            opacity: 1
+        },
+        tooltip: {
+            y: {
+                formatter: function(val) {
+                    return val + " rendez-vous"
+                }
+            }
         }
-      }
-    }
     };
 
     var chart = new ApexCharts(document.querySelector("#chart"), options);

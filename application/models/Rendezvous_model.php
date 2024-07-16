@@ -218,5 +218,23 @@ class Rendezvous_model extends CI_Model {
             ];
         }
     }
+
+    public function get_total_rendezvous() {
+        // Récupérer la date de référence
+        $reference_date = $this->db->get('reference')->row()->date;
+
+        $query = $this->db->query("
+            SELECT 
+                DATE(date_debut) AS date,
+                SUM(CASE WHEN date_paiement IS NOT NULL THEN 1 ELSE 0 END) AS payes, 
+                SUM(CASE WHEN date_paiement IS NULL THEN 1 ELSE 0 END) AS non_payes 
+            FROM rendezvous 
+            WHERE date_debut <= '$reference_date'
+            GROUP BY DATE(date_debut)
+            ORDER BY DATE(date_debut)
+        ");
+
+        return $query->result();
+    }
     
 }
