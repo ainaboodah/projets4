@@ -5,6 +5,7 @@ class Admin extends CI_Controller {
 
     public function __construct() {
         parent::__construct();
+        $this->load->model('Client_model');
         $this->load->model('Admin_model');
         $this->load->model('Rendezvous_model');
         $this->load->library('table');
@@ -36,6 +37,8 @@ class Admin extends CI_Controller {
     public function dashboard() {
         $data ['revenue'] = $this->Admin_model->get_total_revenue();
         $data ['admin_id'] = $this->session->userdata('admin_id');
+        $types = $this->Client_model->getTypes();
+		$data['types'] = $types;
         $this->load->view('admindashboard',$data);
         
     }
