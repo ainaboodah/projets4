@@ -60,6 +60,13 @@ $route['rendezvous'] = 'rendezvous';
 $route['accueil'] = 'welcome/accueil';
 $route['devis'] = 'devis_controller';
 $route['takeRdv'] = 'rendezvous/takeRdv';
+$route['admindashbord'] = 'adminController';
+$route['logoutadmin'] = 'adminController/logoutAdmin';
+$route['loginAsUserAdmin'] = 'adminController/logAsUserAdmin';
+$route['serviceadminview'] = 'adminController/serviceAdminView';
+
+
+
 
 
 

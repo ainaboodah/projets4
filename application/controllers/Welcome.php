@@ -54,8 +54,8 @@ class Welcome extends CI_Controller {
 		$password = $this->input->post('password');
 		$admin = $this->Admin_model->authenticate($username,$password);
 		if(!is_null($admin)) {
-			$this->session->set_userdata('id_admin',$admin->id);
-			$this->load-view('index');
+			$this->session->set_userdata('id_admin',$admin->idAdmin);
+			$this->load->view('admindashboard');
 		}else{
 			$data['errorMessage'] = "Username or password incorect.";
 			$this->load->view('loginadmin',$data);

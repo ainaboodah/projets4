@@ -16,13 +16,13 @@
 
         <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@300;400;700&display=swap" rel="stylesheet">
 
-        <link href="css/bootstrap.min.css" rel="stylesheet">
+        <link href="<?php echo base_url('assets/css/bootstrap.min.css');?>" rel="stylesheet">
 
-        <link href="css/bootstrap-icons.css" rel="stylesheet">
+        <link href="<?php echo base_url('assets/css/bootstrap-icons.css');?>" rel="stylesheet">
 
-        <link href="css/apexcharts.css" rel="stylesheet">
+        <link href="<?php echo base_url('assets/css/apexcharts.css');?>" rel="stylesheet">
 
-        <link href="css/tooplate-mini-finance.css" rel="stylesheet">
+        <link href="<?php echo base_url('assets/css/tooplate-mini-finance.css');?>" rel="stylesheet">
 <!--
 
 Tooplate 2135 Mini Finance
@@ -58,21 +58,8 @@ Bootstrap 5 Dashboard Admin Template
                     <div class="position-sticky py-4 px-3 sidebar-sticky">
                         <ul class="nav flex-column h-100">
                             <li class="nav-item">
-                                <a class="nav-link" aria-current="page" href="admindashboard.html">
+                                <a class="nav-link" aria-current="page" href="<?php echo site_url('admindashbord'); ?>">
                                     Admin Dashboard
-                                </a>
-                            </li>
-
-                            <li class="nav-item">
-                                <a class="nav-link" aria-current="page" href="login.html">
-                                    Login As User
-                                </a>
-                            </li>
-
-
-                            <li class="nav-item">
-                                <a class="nav-link" href="adminreference.html">
-                                    Date De Reference
                                 </a>
                             </li>
 
@@ -90,7 +77,7 @@ Bootstrap 5 Dashboard Admin Template
 
                             
                             <li class="nav-item">
-                                <a class="nav-link" href="adminservice.html">
+                                <a class="nav-link active" href="adminservice.html">
                                     Services
                                 </a>
                             </li>
@@ -101,16 +88,20 @@ Bootstrap 5 Dashboard Admin Template
                                     Liste Des Rendez-Vous
                                 </a>
                             </li>
-
-                            <li class="nav-item border-top mt-auto pt-2">
-                                <a class="nav-link" href="#">
-                                    Logout
-                                </a>
-                            </li>
-
                             <li class="nav-item">
                                 <a class="nav-link" aria-current="page" href="adminfileinsert.html">
                                     Insert A File 
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" aria-current="page" href="<?php echo site_url('loginAsUserAdmin'); ?>">
+                                    Login As User
+                                </a>
+                            </li>
+
+                            <li class="nav-item border-top mt-auto pt-2">
+                                <a class="nav-link" href="<?php echo site_url('logoutadmin'); ?>">
+                                    Logout
                                 </a>
                             </li>
                         </ul>
