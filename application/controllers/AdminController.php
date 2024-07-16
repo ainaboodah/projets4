@@ -18,6 +18,11 @@ class AdminController extends CI_Controller {
 	 * map to /index.php/welcome/<method_name>
 	 * @see https://codeigniter.com/userguide3/general/urls.html
 	 */
+    public function __construct(){
+		parent::__construct();
+		$this->load->model('Client_model');
+		$this->load->library('session');
+	}
 	public function index()
 	{
         if ($this->session->userdata('id_admin')) {
@@ -32,10 +37,26 @@ class AdminController extends CI_Controller {
 	}
     public function logAsUserAdmin(){
         $this->session->unset_userdata('id_admin');
-        $this->load->view('login');
+        $types = $this->Client_model->getTypes();
+		$data['types'] = $types;
+        $this->load->view('login',$data);
     }
     public function serviceAdminView(){
-        $this->load->view('adminservice');
+        if ($this->session->userdata('id_admin')) {
+            $this->load->view('adminservice');
+		} else {
+            $this->load->view('loginadmin');
+		}
+    }
+
+    
+    public function listRdv(){
+
+        if ($this->session->userdata('id_admin')) {
+            $this->load->view('adminrendezvous');
+		} else {
+            $this->load->view('loginadmin');
+		}
     }
 
 }
