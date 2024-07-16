@@ -75,13 +75,13 @@ class Rendezvous_model extends CI_Model {
     }
 
     // Fonction pour insérer un rendez-vous
-    private function insert_reservation($client_id, $service_id, $date_debut, $id_slot) {
+    private function insert_reservation($client_id, $service_id, $date_debut, $id_slot, $date_paiement = null) {
         $reservation_data = [
             'client_id' => $client_id,
             'id_service' => $service_id,
             'date_debut' => $date_debut,
             'id_slot' => $id_slot,
-            'date_paiement' => null 
+            'date_paiement' => $date_paiement 
         ];
         $this->db->insert('rendezvous', $reservation_data);
         return [
@@ -125,6 +125,9 @@ class Rendezvous_model extends CI_Model {
         }
     }
 
+    public function reset_redv() {
+        $this->db->delete('rendezvous');
+    }
     //  mbola mila ampiana
     public function generate_devis($reservation_id) {
         $this->load->library('pdf');
@@ -141,6 +144,76 @@ class Rendezvous_model extends CI_Model {
         $this->pdf->setPaper('A4', 'portrait');
         $this->pdf->render();
         $this->pdf->stream("devis_{$reservation_id}.pdf", array("Attachment" => 0)); // Set Attachment to 0 for inline viewing
+    }
+    // Import 
+    public function import($csvFilePath) {
+        $data = array_map('str_getcsv', file($csvFilePath));
+        $headers = array_shift($data);
+        $errors = [];
+
+        foreach ($data as $row) {
+            $headers = array_map('strtolower', $headers);
+            $voiture = $row[array_search('voiture', $headers)];
+            $typeVoiture = $row[array_search('type voiture', $headers)];
+            $dateRdv = $row[array_search('date rdv', $headers)];
+            $heureRdv = $row[array_search('heure rdv', $headers)];
+            $typeService = $row[array_search('type service', $headers)];
+            $montant = $row[array_search('montant', $headers)];
+            $datePaiement = $row[array_search('date paiement', $headers)];
+            $slot = $row[array_search('slot', $headers)];
+
+            $clientId = $this->Client_model->login($voiture, $this->getIdType($typeVoiture));
+
+            $service = $this->db->get_where('services', ['nom' => $typeService])->row();
+            if (!$service) {
+                $errors[] = "Service not found: $typeService";
+                continue;
+            }
+
+            if ($montant < 0) {
+                $errors[] = "Montant doit être positive";
+                continue;
+            }
+            if (strtotime($datePaiement) < strtotime($dateRdv)) {
+                $errors[] = "Date de paiement au moins égale à la date du rendez-vous.";
+                continue;
+            }
+
+            $dateDebut = "$dateRdv $heureRdv";
+            $insertResult = $this->insert_reservation($clientId, $service->id_service, $dateDebut, $slot, $datePaiement);
+            if ($insertResult['status'] === 'error') {
+                $errors[] = $insertResult['message'];
+            }
+        }
+
+        $this->create_travaux();
+
+        if (!empty($errors)) {
+            return $errors;
+        }
+        return true;
+    }
+
+    private function getIdType($typeVoiture) {
+        $record = $this->db->get_where('type', ['value' => $typeVoiture])->row();
+        if ($record) {
+            return $record->id;
+        } else {
+            $newRecord = ['value' => $typeVoiture];
+            $this->db->insert('type', $newRecord);
+            return $this->db->insert_id(); 
+        }
+    }
+
+    private function create_travaux() {
+        $query = $this->db->query("
+            CREATE VIEW v_travaux AS
+            SELECT rendezvous.*, client.nom AS client_name, services.nom AS service_name
+            FROM rendezvous
+            JOIN client ON rendezvous.client_id = client.id
+            JOIN services ON rendezvous.id_service = services.id_service
+        ");
+        return $query ? true : false;
     }
     
 }

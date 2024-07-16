@@ -17,6 +17,7 @@ class Admin extends CI_Controller {
         $admin = $this->Admin_model->authenticate($username, $password);
         if ($admin) {
             $this->session->set_userdata('admin_id', $admin->idAdmin);
+            $this->session->set_userdata('role', 'admin');
             redirect('admin/dashboard'); 
         } else {
             $this->session->set_flashdata('error', 'Login Invalide');

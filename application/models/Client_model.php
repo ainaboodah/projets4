@@ -18,9 +18,14 @@ class Client_model extends CI_Model {
         return $this->db->insert_id(); // Return inserted user ID
     }
 
+    public function reset_client() {
+        $this->db->delete('client');
+    }
+
     //  get all type 
     public function getTypes() {
         return $this->db->get('type')->result_array();
     }
+
 }
 ?>

@@ -2,7 +2,11 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Admin_model extends CI_Model {
-    
+    public function __construct() {
+        parent::__construct();
+        $this->load->model('Client_model');
+        $this->load->model('Rendezvous_model');
+    }
     // Authenticate admin
     public function authenticate($username, $password) {
         $this->db->where('username', $username);
@@ -47,7 +51,7 @@ class Admin_model extends CI_Model {
         return $this->db->delete('services');
     }
 
-    // List quotes
+    // List devis
     public function get_devis() {
         $this->db->select('r.*, c.nom AS client_name, s.nom AS service_name');
         $this->db->from('rendezvous r');
@@ -71,6 +75,29 @@ class Admin_model extends CI_Model {
         $reservation = $this->db->get()->row();
 
         return strtotime($payment_date) >= strtotime($reservation->date_debut);
+    }
+
+    // reset database
+    public function reset_database() {
+        $this->check_admin();
+        $this->db->delete('service');
+        $this->db->delete('type');
+        $this->Rendezvous_model->reset_rdv();
+        $this->Client_model->reset_client();
+        redirect('admin/dashboard');
+    }
+
+    private function check_admin() {
+        if ($this->session->userdata('role') != 'admin') {
+            redirect('login');
+        }
+    }
+
+    //  importation services
+    public function import_services() {
+        read csv 
+        check if duree positive
+        $this->db->insert('services', array('nom' => $service, duree, if prix == null $prix = 0))
     }
 
 }

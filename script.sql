@@ -72,7 +72,12 @@ LEFT JOIN v_slot_occupe
     )
 WHERE id_slot IS NULL;
 
-
+--  view travaux
+CREATE VIEW v_travaux AS
+            SELECT rendezvous.*, client.nom AS client_name, services.nom AS service_name
+            FROM rendezvous
+            JOIN client ON rendezvous.client_id = client.id
+            JOIN services ON rendezvous.id_service = services.id_service
 
 INSERT INTO projets4.`type`
 (id, value)
